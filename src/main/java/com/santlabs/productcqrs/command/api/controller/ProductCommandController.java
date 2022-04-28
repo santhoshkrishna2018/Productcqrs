@@ -26,9 +26,9 @@ public class ProductCommandController {
     @PostMapping
     public String addProduct(@RequestBody ProductDto productDto){
         Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String create_ts = dateFormat.format(date);
-        System.out.println("create_ts :"+create_ts);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String createTs = dateFormat.format(date);
+        System.out.println("createTs :"+createTs);
         CreateProductCommand createProductCommand =
                 CreateProductCommand.builder()
                         .productId(UUID.randomUUID().toString())
@@ -36,25 +36,31 @@ public class ProductCommandController {
                         .price(productDto.getPrice())
                         .qty(productDto.getQty())
                         .status("Draft created")
+                        .createTs(createTs)
+                        .updateTs(createTs)
                         .build();
         System.out.println("createProductCommand = "+createProductCommand);
         String result = commandGateway.sendAndWait(createProductCommand);
         return result;
     }
 
-    @PutMapping("/{id}")
-    public String updateProduct(@PathVariable String id, @RequestBody UpdateProductDto updateProductDto){
+    @PutMapping("/{productId}")
+    public String updateProduct(@PathVariable String productId, @RequestBody UpdateProductDto updateProductDto){
         Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String update_ts = dateFormat.format(date);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String updateTs = dateFormat.format(date);
+        System.out.println("productId :"+productId);
         UpdateProductCommand updateProductCommand =
                 UpdateProductCommand.builder()
-                        .productId(id)
+                        .productId(productId)
                         .qty(updateProductDto.getQty())
                         .price(updateProductDto.getPrice())
                         .status("Product Updated")
+                        .updateTs(updateTs)
                         .build();
+        System.out.println("updateProductCommand :"+updateProductCommand);
         String result = commandGateway.sendAndWait(updateProductCommand);
+        System.out.println("result ="+result);
         return result;
     }
 }

@@ -1,9 +1,6 @@
 package com.santlabs.productcqrs.command.api.events;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -11,11 +8,13 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ProductUpdatedEvent {
 
     private String productId;
     private BigDecimal price;
     private Integer qty;
     private String status;
+    private String updateTs;
 
 }

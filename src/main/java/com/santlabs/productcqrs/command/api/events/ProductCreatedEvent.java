@@ -16,4 +16,6 @@ public class ProductCreatedEvent {
     private BigDecimal price;
     private Integer qty;
     private String status;
+    private String createTs;
+    private String updateTs;
 }

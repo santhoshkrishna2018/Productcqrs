@@ -32,11 +32,14 @@ public class ProductEventsHandler {
     }
     @EventHandler
     public void on(ProductUpdatedEvent productupdatedEvent){
-        Product product = productRepository.getById(productupdatedEvent.getProductId());
-        product.setPrice(productupdatedEvent.getPrice());
-        product.setQty(productupdatedEvent.getQty());
-        product.setStatus(productupdatedEvent.getStatus());
-        productRepository.save(product);
+        System.out.println("productId:"+productupdatedEvent.getProductId());
+        if(productupdatedEvent.getProductId()!= null){
+            Product product = productRepository.getById(productupdatedEvent.getProductId());
+            BeanUtils.copyProperties(productupdatedEvent,product);
+            product.setProductId(productupdatedEvent.getProductId());
+            System.out.println("product :"+product);
+            productRepository.save(product);
+        }
         //If we get any exceptions in this, ExceptionHandler will take care of it.
     }
 }

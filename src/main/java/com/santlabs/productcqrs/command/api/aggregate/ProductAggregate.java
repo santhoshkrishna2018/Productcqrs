@@ -23,6 +23,8 @@ public class ProductAggregate {
     private BigDecimal price;
     private Integer qty;
     private String status;
+    private String createTs;
+    private String updateTs;
 
     @CommandHandler
     public ProductAggregate(CreateProductCommand createProductCommand) {
@@ -30,7 +32,8 @@ public class ProductAggregate {
 
         ProductCreatedEvent productCreatedEvent =
                 new ProductCreatedEvent();
-        BeanUtils.copyProperties(productCreatedEvent,createProductCommand);
+        BeanUtils.copyProperties(createProductCommand,productCreatedEvent);
+        System.out.println("productCreatedEvent :"+productCreatedEvent);
         AggregateLifecycle.apply(productCreatedEvent);
     }
 
@@ -44,26 +47,27 @@ public class ProductAggregate {
         this.price = productCreatedEvent.getPrice();
         this.qty = productCreatedEvent.getQty();
         this.status =productCreatedEvent.getStatus();
+        this.createTs = productCreatedEvent.getCreateTs();
+        this.updateTs = productCreatedEvent.getUpdateTs();
     }
 
     @CommandHandler
     public void on(UpdateProductCommand updateProductCommand){
-
+        System.out.println("updateProductCommand ="+updateProductCommand);
         ProductUpdatedEvent updatedEvent = new ProductUpdatedEvent();
-        updatedEvent.builder().productId(updateProductCommand.getProductId())
-                        .qty(updateProductCommand.getQty())
-                        .status(updateProductCommand.getStatus())
-                        .price(updateProductCommand.getPrice())
-                        .build();
+        BeanUtils.copyProperties(updateProductCommand,updatedEvent);
+        System.out.println("updatedEvent :"+updatedEvent);
         AggregateLifecycle.apply(updatedEvent);
 
     }
 
     @EventSourcingHandler
     public void on(ProductUpdatedEvent updatedEvent){
+        this.productId = updatedEvent.getProductId();
         this.price = updatedEvent.getPrice();
         this.qty = updatedEvent.getQty();
         this.status =updatedEvent.getStatus();
+        this.updateTs = updatedEvent.getUpdateTs();
     }
 
 }
